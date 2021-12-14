@@ -1,7 +1,0 @@
-Access Token voting-system: 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
-
-Command
-git status
-git add .... (file/folder)
-git commit -m "message" .... (file/folder)
-git push -u origin main

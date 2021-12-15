@@ -49,7 +49,16 @@ app.get('/login',function(request,response) {
 });
 
 app.post('/auth', async (request, response) => {
-
+    var addr = request.body.address;
+    var pwd = request.body.password;
+    try {
+        RC.methods.getVoter(addr).call({from: addr}).then(function(res) {
+            console.log(res);
+            response.sendFile(path.join(dir+'src/voting.html'));
+        });
+    } catch(err) {
+        console.log(err);
+    }
 });
 
 app.get('/voting', function (request, response) {

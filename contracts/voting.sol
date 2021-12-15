@@ -9,9 +9,8 @@ contract voting {
   }
 
   struct Voter {
-    string name;
-    bool voted; //has voted or not
-    bool validated; //voter has registered and passed verification process
+    bool voted; // true when voter has voted
+    bool validated; //true when voter has registered and passed verification process
   }
 
   mapping(address => Voter) public voters;
@@ -20,26 +19,40 @@ contract voting {
   uint public candCounter;
   uint public voterCounter;
 
-  constructor() public {
+  constructor() {
     addCandidate("Contestant 1");
     addCandidate("Contestant 2");
   }
 
   event votedEvent(uint indexed _candId);
+  event registrationSuccess(address _voterAddr);
+
+  modifier voterMustNotExist(address _voter) {
+    require(!voters[_voter].validated,"voter already registered");
+    _;
+  }
 
   function addCandidate (string memory _name) private {
     candCounter++;
     candidates[candCounter] = Candidate(candCounter,_name,0);
   }
 
-  function registerVoter(string memory _name, bytes memory signature) public {
+  /*function registerVoter(string memory _name, bytes memory signature) public {
     bytes32 hash = keccak256(abi.encodePacked(_name));
     address signer = recover(hash, signature);
     //check signature and check voter hasn't registered before
     if (signer == msg.sender && !voters[msg.sender].validated) {
       voterCounter++;
-      voters[msg.sender] = Voter(_name,false,true);
+      voters[msg.sender] = Voter(false,true);
     }
+  }*/
+
+  function registerVoter(address addr) public {
+  //voterMustNotExist(msg.sender)
+    voterCounter++;
+    voters[addr] = Voter(false,true);
+
+    emit registrationSuccess(addr);
   }
 
   function vote (uint _candId) public {

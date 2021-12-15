@@ -25,11 +25,35 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
 app.get('/', function(request,response) {
-    response.sendFile(path.join(dir+'src/login.html'));
+    response.sendFile(path.join(dir+'src/registration.html'));
 });
 
 app.post('/registration', async (request, response) => {
-    
+    var addr = request.body.address;
+    var pwd = request.body.password;
+    try {
+        let tx = await RC.methods.registerVoter(addr).send({
+            from: addr,
+            gas: 1000000
+        })
+        console.log(tx);
+        //$("#accountAddress").html("Successfully Registered Your Account: " + addr);
+        response.send("<p id='accountAddress'>Successfully Registered: "+addr+"</p>");
+    } catch(err) {
+        console.log(err);
+    }
+});
+
+app.get('/login',function(request,response) {
+    response.sendFile(path.join(dir+'src/login.html'));
+});
+
+app.post('/auth', async (request, response) => {
+
+});
+
+app.get('/voting', function (request, response) {
+    response.sendFile(path.join(dir+'src/voting.html'));
 });
 
 app.listen(3000, async(request, response) => {

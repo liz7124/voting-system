@@ -1,6 +1,6 @@
-#Blockchain-based Voting System
+# Blockchain-based Voting System
 
-###Setup
+### Setup
 ```
 truffle init
 truffle create contract voting #create contract file
@@ -8,7 +8,7 @@ truffle create test voting #create test file
 ```
 > change ```dir``` variable in src/js/tools.js to your directory path.
 
-###Run
+### Run
 1. Install dependencies in setup.sh
 2. Run ```ganache-cli -m dongseo```
 3. Run ```truffle migrate --reset```

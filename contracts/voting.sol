@@ -20,8 +20,9 @@ contract voting {
   uint public voterCounter;
 
   constructor() {
-    addCandidate("Contestant 1");
-    addCandidate("Contestant 2");
+    addCandidate("Contestant 1"); //fot testing
+    addCandidate("Contestant 2"); //testing
+    registerVoter(0x6828934Ab026a2C1295Fa75716D9B1B0344092DE); //for testing
   }
 
   event votedEvent(uint indexed _candId);
@@ -29,6 +30,11 @@ contract voting {
 
   modifier voterMustNotExist(address _voter) {
     require(!voters[_voter].validated,"voter already registered");
+    _;
+  }
+
+  modifier voterMustExist(address _voter) {
+    require(voters[_voter].validated,"voter registered in the system");
     _;
   }
 
@@ -53,6 +59,18 @@ contract voting {
     voters[addr] = Voter(false,true);
 
     emit registrationSuccess(addr);
+  }
+
+  //login
+  function getVoter(int nounce, bytes memory signature) public voterMustExist(msg.sender) view returns(bool) {
+    bytes32 messagehash = keccak256(abi.encodePacked(nounce));
+    address signer = recover(messagehash, signature);
+    //check signature and check voter is registered before
+    if (signer == msg.sender && voters[msg.sender].validated) {
+      return(true);
+    } else {
+      return(false);
+    }
   }
 
   function vote (uint _candId) public {

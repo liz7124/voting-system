@@ -6,7 +6,7 @@ npm install -g truffle
 npm install -g ganache-cli
 
 npm install express
-npm install eth-crypto
+npm install eth-crypto --save
 npm install web3
 npm install express-session
 #npm install --save request-promise-native

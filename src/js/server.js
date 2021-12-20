@@ -4,6 +4,7 @@ const Web3 = require('web3');
 //const session = require('express-session');
 const bodyParser = require('body-parser');
 const path = require('path');
+const random = require('random')
 
 const dir = "/home/lizz/MyProjects/voting-system/"
 
@@ -16,6 +17,7 @@ const app = express();
 //app.use(express.urlencoded({extended: true}));
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
+app.use('/static',express.static('src'));
 
 // set the view engine to ejs
 app.set('view engine', 'ejs');
@@ -42,16 +44,20 @@ app.post('/registration', async (request, response) => {
 });
 
 app.get('/login',function(request,response) {
-    response.render('pages/login');
+    let _nounce = random.int(10, 1000);
+    response.render('pages/login', {
+        nounce: _nounce
+    });
 });
 
 app.post('/auth', async (request, response) => {
     var addr = request.body.address;
     var pwd = request.body.password;
     var signature = request.body.signature;
+    var nounce = request.body.nounce;
 
     try {
-        RC.methods.getVoter(25,signature).call({from: addr}).then(function(res) {
+        RC.methods.getVoter(nounce,signature).call({from: addr}).then(function(res) {
             console.log(res);
             if(res == true) {
                 response.redirect('/voting');
@@ -89,6 +95,7 @@ app.post('/vote', async function (request, response) {
         response.redirect('/voting');
     } catch(err) {
         console.log(err);
+        console.log(err.data[0].reason);
     }
 });
 
